@@ -16,10 +16,10 @@ router.get("/getfreelancer", async (req, res) => {
 
 router.post("/createfreelancer", async (req, res) => {
     try {
-        const { firstName, lastname, title, bio, skills, hourlyRate, availability, portfolio, education, experience, languages, location, profilePicture, rating, totalReviews, peopleReviewed } = req.body;
+        const { firstName, lastName, title, bio, skills, hourlyRate, availability, portfolio, education, experience, languages, location, profilePicture, rating, totalReviews, peopleReviewed } = req.body;
 
     const newFreelancer = new freelance({
-        firstName, lastname, title, bio, skills, hourlyRate, availability, portfolio, education, experience, languages, location, profilePicture, rating, totalReviews, peopleReviewed
+        firstName, lastName, title, bio, skills, hourlyRate, availability, portfolio, education, experience, languages, location, profilePicture, rating, totalReviews, peopleReviewed
     })
 
     await newFreelancer.save();
