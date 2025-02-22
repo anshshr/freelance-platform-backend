@@ -1,7 +1,7 @@
 const mongoose = require("mongoose")
 require("dotenv").config()
 
-const mongodbUri = process.env.MONGO_DB_URI
+const mongodbUri = "mongodb+srv://anshshr:ansh123@freelancing-platform.esbya.mongodb.net/"
 
 const conn = mongoose.connect(mongodbUri, {
 }).then(() => {
