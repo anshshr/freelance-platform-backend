@@ -20,11 +20,11 @@ const clientSchema = new mongoose.Schema({
     location: {
         country: {
             type: String,
-            required: true
+            
         },
         city: {
             type: String,
-            required: true
+            
         }
     },
     profilePicture: {

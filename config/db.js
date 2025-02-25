@@ -1,13 +1,13 @@
 const mongoose = require("mongoose")
 require("dotenv").config()
 
-const mongodbUri = "mongodb+srv://anshshr:ansh123@freelancing-platform.esbya.mongodb.net/"
+const mongodbUri = process.env.DATABASE_URI;
 
 const conn = mongoose.connect(mongodbUri, {
 }).then(() => {
     console.log("the data base is conected succesfully")
 }).catch((err) => {
-    console.error("Database connection error:", err);
+    throw new Error("Database Connection Error",err.message)
 })
 
 
