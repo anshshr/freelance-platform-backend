@@ -6,10 +6,12 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 const db  = require("./config/db")
 const freelancerRouter = require("./routes/freelance")
-const clinetRouter = require("./routes/client")
+const clinetRouter = require("./routes/client");
+const resumeRouter = require("./routes/resume");
 
 app.use("/freelancer" ,freelancerRouter )
 app.use("/clients" ,clinetRouter )
+app.use("/extractResumeDetails",resumeRouter)
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, () => {
