@@ -30,7 +30,11 @@ const projectSchema = new mongoose.Schema({
     required:true,
   },
   status: { type: String, enum: ["Pending", "Completed", "Inprogress"],default:"Pending" },
-  proposalsReceived: { type: Number },
+  proposalsReceived: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Proposal",
+    default:[]
+  }],
   deadline: { type: Date,required:true },
   datePosted: { type: Date, default: Date.now() },
   review:{
