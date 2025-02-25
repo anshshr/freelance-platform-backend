@@ -33,18 +33,8 @@ const clientSchema = new mongoose.Schema({
     },
     projectsPosted: [
         {
-            projectImage: [String],
-            title: String,
-            description: String,
-            budget: {
-                type: Number,
-                default: 0,
-            },
-            skillsRequired: [String],
-            status: { type: String, enum: ["Pending", "Completed", "Inprogress"] },
-            proposalsReceived: { type: Number },
-            deadline: { type: Date },
-            datePosted: { type: Date, default: Date.now },
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Project"
         }
     ],
     rating: {
