@@ -1,27 +1,16 @@
 const express = require("express")
 const resumeRouter = express.Router();
 const multer=require("multer");
-const fs=require("fs");
 const pdfParse = require('pdf-parse');
 const groq=require("groq-sdk")
 const groqClient=new groq({
     apiKey:process.env.GROQ_API_KEY
 })
-const storage=multer.diskStorage({
-    destination:(req,file,cb)=>{
-        cb(null,"./uploads/")
-    },
-    filename:(req,file,cb)=>{
-        cb(null,file.originalname)
-    }
-})
+const storage=multer.memoryStorage();
 const upload=multer({storage:storage})
 resumeRouter.post("/",upload.single("file"),async (req,res)=>{
     try {
-        // console.log(req.file.path);
-    const dataBuffer = fs.readFileSync(req.file.path);
-    const data = await pdfParse(dataBuffer);
-    // res.send(data.text);
+    const data = await pdfParse(req.file.buffer);
     const extractData=await main(data.text);
     res.status(200).json({
         data:extractData
