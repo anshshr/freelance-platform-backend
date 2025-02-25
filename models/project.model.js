@@ -5,6 +5,10 @@ const projectSchema = new mongoose.Schema({
         ref:"Client",
         required:true
     },
+    userSelected:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Freelancer"
+    },
   projectImage: [String],
   title: {
     type: String,
@@ -29,6 +33,14 @@ const projectSchema = new mongoose.Schema({
   proposalsReceived: { type: Number },
   deadline: { type: Date,required:true },
   datePosted: { type: Date, default: Date.now() },
+  review:{
+    type:String,
+    default:""
+  },
+  ratings:{
+    type:Number,
+    default:0
+  }
 },{
     timestamps:true
 });
