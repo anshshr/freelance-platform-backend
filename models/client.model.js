@@ -5,6 +5,7 @@ const clientSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    clerkId:String,
     lastName: {
         type: String,
         required: true
