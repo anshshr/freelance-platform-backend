@@ -13,6 +13,7 @@ const projectRouter = require("./routes/project");
 const server = http.createServer(app);
 const clerk = require("@clerk/express");
 const { send } = require("process");
+const proposalRouter = require("./routes/proposal");
 const clerkClient = clerk.createClerkClient({
   secretKey: "sk_test_jRilrIuhFQQ4e00OVapbNOerfYdcb8QJLNf45UR9FJ",
 });
@@ -31,6 +32,7 @@ app.use("/freelancer", freelancerRouter);
 app.use("/clients", clinetRouter);
 app.use("/extractResumeDetails", resumeRouter);
 app.use("/projects", projectRouter);
+app.use("/proposals",proposalRouter)
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to Freelance API" });
 });
