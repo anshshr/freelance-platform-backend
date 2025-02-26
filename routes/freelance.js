@@ -61,17 +61,14 @@ router.post("/addPortfolioProject", async (req, res) => {
 router.get("/getfreelancer/:id", async (req, res) => {
     try {
         const id = req.params.id
-        console.log(typeof id);
 
         const user = await freelance.findOne({ _id: id });
 
         if (user) {
-            console.log("freelancer found");
 
             res.status(200).json({ "message": "Found the user", "user": user })
         }
         else {
-            console.log("freelancer not found");
             res.status(200).json({ "message": "No such user exist" })
         }
 
