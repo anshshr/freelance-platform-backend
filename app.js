@@ -14,9 +14,11 @@ const server = http.createServer(app);
 const clerk = require("@clerk/express");
 const { send } = require("process");
 const proposalRouter = require("./routes/proposal");
-const clerkClient = clerk.createClerkClient({
-  secretKey: "sk_test_jRilrIuhFQQ4e00OVapbNOerfYdcb8QJLNf45UR9FJ",
-});
+const Message = require("./models/chats.model");
+const paymentRouter = require("./routes/payment");
+// const clerkClient = clerk.createClerkClient({
+//   secretKey: "sk_test_jRilrIuhFQQ4e00OVapbNOerfYdcb8QJLNf45UR9FJ",
+// });
 let users = {};
 const io = new Server(server, {
   cors: {
@@ -32,7 +34,8 @@ app.use("/freelancer", freelancerRouter);
 app.use("/clients", clinetRouter);
 app.use("/extractResumeDetails", resumeRouter);
 app.use("/projects", projectRouter);
-app.use("/proposals",proposalRouter)
+app.use("/proposals", proposalRouter);
+app.use("/payment",paymentRouter)
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to Freelance API" });
 });
@@ -54,17 +57,22 @@ app.post("/create", async (req, res) => {
 });
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
-
-  // Save user
-  socket.on("register", (userId) => {
-    users[userId] = socket.id; // Map userId to socketId
-    console.log("Users:", users);
+  socket.on("register", async (userId) => {
+    users[userId] = socket.id;
+    console.log(users)
+    // Retrieve previous chat history with any user
+    const messages = await Message.find({
+      $or: [{ senderId: userId }, { recipientId: userId }],
+    }).sort({ timestamp: 1 });
+    socket.emit("chatHistory", messages);
   });
 
   // Send private message
-  socket.on("privateMessage", ({ recipientId, message }) => {
+  socket.on("privateMessage",async ({ recipientId, message }) => {
     const recipientSocketId = users[recipientId];
-    if (recipientSocketId) {
+    const newMessage = new Message({ senderId:socket.id, recipientId, message });
+    await newMessage.save();
+    if (recipientSocketId) { 
       io.to(recipientSocketId).emit("privateMessage", {
         message,
         senderId: socket.id,
@@ -78,14 +86,12 @@ io.on("connection", (socket) => {
   // Remove user on disconnect
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
-    // const userId = Object.keys(users).find((key) => users[key] === socket.id);
     for (const key in users) {
       if (users[key] === socket.id) {
         delete users[key];
       }
     }
-    // if (userId) delete users[userId]; // Remove user from list
-    console.log("Users:", users);
+    
   });
 });
 

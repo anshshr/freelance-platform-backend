@@ -12,6 +12,7 @@ const upload=multer({storage:storage})
 resumeRouter.post("/",upload.single("file"),async (req,res)=>{
     try {
     const data = await pdfParse(req.file.buffer);
+    console.log(data.text);
     const extractData=await main(data.text);
     res.status(200).json({
         data:extractData

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Zego Express Video Call</title>
+    
+    <style>
+        .video-wrapper {
+            width: 610px;
+            margin: 0 auto;
+        }
+        #remote-video, #local-video {
+            width: 300px;
+            height: 270px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Zego RTC Video Call</h1>
+    <div class="video-wrapper">
+        <h4>Local Video</h4>
+        <h4>Remote Video</h4>
+        <div id="local-video"></div>
+        <div id="remote-video"></div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/zegocloud-webrtc@latest"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/zegocloud-webrtc@latest"></script>
+
+    <script>
+        let appID = 1279318135;
+        let server = "wss://webliveroom1279318135-api.coolzcloud.com/ws";
+        let zg = new ZegoExpressEngine(appID, server);
+
+        zg.on('roomStateChanged', (roomID, reason) => {
+            if (reason === 'LOGINED') {
+                console.log("Connected to the room successfully.");
+            }
+        });
+
+        let userID = "user" + Math.floor(Math.random() * 1000);
+        let roomID = "123";
+        let token = "";
+
+        zg.loginRoom(roomID, token, { userID, userName: userID }, { userUpdate: true }).then(async result => {
+            if (result) {
+                console.log("Login success");
+                const localStream = await zg.createStream();
+                zg.createLocalStreamView(localStream).play("local-video");
+
+                let streamID = new Date().getTime().toString();
+                zg.startPublishingStream(streamID, localStream);
+            }
+        });
+
+        zg.on('roomStreamUpdate', async (roomID, updateType, streamList) => {
+            if (updateType === 'ADD') {
+                const remoteStream = await zg.startPlayingStream(streamList[0].streamID);
+                zg.createRemoteStreamView(remoteStream).play("remote-video");
+            }
+        });
+    </script>
+</body>
+</html>
