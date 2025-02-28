@@ -1,6 +1,7 @@
 const express = require('express');
 const Proposal = require('../models/proposal.model');
 const Project = require('../models/project.model');
+// const Freelancer=require('../models/freelancer.model');
 const router=express.Router();
 
 router.post("/create",async (req,res)=>{

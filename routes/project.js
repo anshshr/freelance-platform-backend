@@ -1,6 +1,8 @@
 const express=require('express');
 const Project = require('../models/project.model');
 const Client = require('../models/client.model');
+const freelance = require("../models/freelance.model")
+
 const router=express.Router();
 router.get("/",(req,res)=>{
     res.json({
@@ -21,7 +23,6 @@ router.post("/createProject",async (req,res)=>{
                 message:"Client not found"
             })
         }
-
         const newProject=new Project({
             title,
             description,
@@ -34,11 +35,22 @@ router.post("/createProject",async (req,res)=>{
         await newProject.save();
         newClient.projectsPosted.push(newProject._id);
         await newClient.save();
+        const freelancers=await freelance.find({skills:{$in:skillsRequired}});
+        if(freelancers){
+            freelancers.forEach(async (freelancer)=>{
+                freelancer.newProjectNotification.push({
+                    ProjectId:newProject._id,
+                    isRead:false
+                })
+                await freelancer.save();
+            })
+        }
         res.status(200).json({
             sucess:true,
             message:"New Project Created sucessfully",
             newProject,
-            newClient
+            newClient,
+            freelancers
         })
     } catch (error) {
         res.json({
