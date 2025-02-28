@@ -20,14 +20,14 @@ const freelanceSchema = new mongoose.Schema({
   hourlyRate: { type: Number, required: true },
   availability: {
     type: String,
-    enum: ["Available", "Busy", "On Vacation"],
+    enum: ["Available", "Busy", "On Vacation","Full-time"],
     default: "Available",
   },
 
   portfolio: [
     {
       projectName: { type: String, required: true },
-      description: { type: String, required: true },
+      description: { type: String },
       link: { type: String },
       images: [{ type: String }],
     },
@@ -66,7 +66,7 @@ const freelanceSchema = new mongoose.Schema({
 
   peopleReviewed: [
     {
-      userId: { type: mongoose.Schema.Types.ObjectId, ref: "Client" },
+      userId: { type: String },
       reviewText: { type: String },
       ratingGiven: { type: Number, min: 1, max: 5 },
     },
