@@ -93,4 +93,36 @@ router.get('/failed', async (req, res) => {
 
     return res.redirect("http://localhost:5173/failed");
 })
+router.post("/send-money", async (req, res) => {
+    console.log("Sending Money")
+    const { amount, receiverEmail } = req.body;
+  
+    const sender_batch_id = Math.random().toString(36).substring(9);
+  
+    const payout = {
+      sender_batch_header: {
+        sender_batch_id,
+        email_subject: "You have a payment!",
+      },
+      items: [
+        {
+          recipient_type: "EMAIL",
+          receiver: receiverEmail,
+          amount: {
+            value: amount,
+            currency: "USD",
+          },
+          note: "Payment for services",
+        },
+      ],
+    };
+  
+    paypal.payout.create(payout, function (error, payoutResponse) {
+      if (error) {
+        res.status(500).json({ message: "Error sending money", error });
+      } else {
+        res.status(200).json(payoutResponse);
+      }
+    });
+  });
 module.exports=router;
