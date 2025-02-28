@@ -1,5 +1,6 @@
 const express = require("express");
-const freelance = require("../models/freelance.model")
+const freelance = require("../models/freelance.model");
+const Project = require("../models/project.model");
 const router = express.Router()
 
 router.get("/getfreelancer", async (req, res) => {
@@ -75,6 +76,36 @@ router.get("/getfreelancer/:id", async (req, res) => {
     } catch (error) {
         res.status(500).json({
             message: "Cant add project to portfolio" + error.message
+        })
+    }
+})
+router.get("/getAllNotification/:id",async(req,res)=>{
+    try {
+        const {id}=req.params;
+        const getUser=await freelance.findById(id).populate("newProjectNotification.projectId");
+        if(!getUser){
+            return res.status(404).json({
+                message:"User not found"
+            })
+        }
+        const userNotification=getUser.newProjectNotification;
+        const Notification={};
+        if(userNotification){
+            userNotification.forEach(notification => {
+                console.log(notification._id)
+                const project=Project.findById(notification._id)
+                console.log(project )
+            });
+        } 
+        res.status(200).json({
+            message:"Notification found",
+            userNotification
+        });
+
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Cant get notification" + error.message
         })
     }
 })
