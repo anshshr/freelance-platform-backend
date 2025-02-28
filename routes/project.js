@@ -27,6 +27,22 @@ async function main(data1,data2) {
         throw new Error(error.message)
     }
 }
+async function main2(data1,data2) {
+    try {
+        const chatCompletion = await groqClient.chat.completions.create({
+            messages: [{
+                role: 'user', content: "the project uploaded by client on our freelancing website " + data2 + "and the freelancer has skills and previous experience in data : "+data1 + "Can you make proposal for the project from the freelancer side and in this proposal you can include your previous work and skills which was required in your project and experience and why you are the best fit for this project. And Please make sure that all text should be in plain text format."}],
+            model: "llama-3.3-70b-versatile",
+        });
+    
+        const extractData=chatCompletion.choices[0].message.content
+        console.log(extractData.trim())
+        return extractData;
+        
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
 const router=express.Router();
 router.get("/",(req,res)=>{
     res.json({
@@ -173,4 +189,31 @@ router.post("/updateProject/:id", async (req, res) => {
         })
     }
 })
-module.exports = router;
+
+router.post("/generateProposal",async (req,res)=>{
+    try{
+        const {projectId,freelanceId}=req.body;
+        const project=await Project.findById(projectId);
+        if(!project){
+            return res.json({
+                message:"Project not found"
+            })
+        }
+        const data=project.title+"-"+project.description+ " and skills required are"+project.skillsRequired.join(" , ");
+        const freelancer=await freelance.findById(freelanceId);
+        if(!freelancer){
+            return res.json({
+                message:"Freelancer not found"
+            })
+        }
+        const freelanceData=JSON.stringify(freelancer);
+        const response=await main2(freelanceData,data);
+        res.json(response)
+    }
+    catch(error){
+        res.json({
+            message:"Error in generating proposal "+error.message
+        })
+    }
+})
+module.exports=router;
