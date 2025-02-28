@@ -28,4 +28,23 @@ router.post("/createClient", async (req, res) => {
 
 })
 
+router.get("/clientId/:id" ,  async(req , res)=>{
+    try {
+        const id = req.params.id;
+    const user = await clientModel.findOne({ _id: id });
+
+    if (user) {
+        res.status(200).json({ "message": "Found the user", "user": user })
+    }
+    else {
+        res.status(200).json({ "message": "No such user exist" })
+    }
+    } catch (error) {
+        res.status(500).json({
+            message: "didnt get the clinet with the given id" + error.message
+        })
+    }
+}) 
+
+
 module.exports = router

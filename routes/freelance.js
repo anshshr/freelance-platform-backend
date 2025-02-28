@@ -66,7 +66,6 @@ router.get("/getfreelancer/:id", async (req, res) => {
         const user = await freelance.findOne({ _id: id });
 
         if (user) {
-
             res.status(200).json({ "message": "Found the user", "user": user })
         }
         else {
@@ -75,7 +74,7 @@ router.get("/getfreelancer/:id", async (req, res) => {
 
     } catch (error) {
         res.status(500).json({
-            message: "Cant add project to portfolio" + error.message
+            message: "didnt get the freelancer with the given id" + error.message
         })
     }
 })
