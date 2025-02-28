@@ -77,7 +77,7 @@ router.get("/getProject/:id",async (req,res)=>{
         res.status(200).json({
             sucess:true,
             project
-        })
+        })  
     } catch (error) {
         res.json({
             message:"Error in getting project "+error.message
