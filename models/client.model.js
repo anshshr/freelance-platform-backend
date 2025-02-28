@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
+const { notification } = require("paypal-rest-sdk");
 
 const clientSchema = new mongoose.Schema({
     firstName: {
         type: String,
         required: true
     },
+    
     clerkId:String,
     lastName: {
         type: String,
